@@ -1,0 +1,167 @@
+export const PROJECTS = [
+  {
+    id: 'project-1',
+    title: 'Fulcrum Design System',
+    role: 'Lead Product Designer',
+    company: 'Fulcrum',
+    year: '2023',
+    outcome: 'Reduced design-to-dev handoff time by 60%. Adopted across 4 product teams.',
+    isConfidential: false,
+    color: '#4da6ff',
+    installationLabel: 'CASE STUDY 01',
+    panels: [
+      {
+        type: 'intro',
+        caption: 'A design system isn\'t a library. It\'s a shared language.',
+        body: 'Fulcrum had four product teams speaking four dialects. Components built in isolation. Decisions made twice. I came in to write the grammar.',
+      },
+      {
+        type: 'problem',
+        caption: 'THE PROBLEM',
+        body: 'No single source of truth. Engineers and designers worked from different references, leading to 40+ component variants across codebases. Every sprint carried tax from decisions already made.',
+      },
+      {
+        type: 'process',
+        caption: 'THE PROCESS',
+        body: 'Audited all four products. Identified 220 unique UI patterns, collapsed to 38 primitives. Ran collaborative naming sessions — naming is consensus-building. Shipped in Figma and Storybook simultaneously.',
+      },
+      {
+        type: 'outcome',
+        caption: 'THE OUTCOME',
+        body: 'Handoff time down 60%. New features shipping in days instead of weeks. One language. Four teams. Zero renegotiation.',
+      },
+    ],
+  },
+  {
+    id: 'project-2',
+    title: 'Onboarding Redesign',
+    role: 'Senior Product Designer',
+    company: '[Confidential]',
+    year: '2024',
+    outcome: 'Trial-to-paid conversion up 34% in 90 days post-launch.',
+    isConfidential: true,
+    color: '#e63946',
+    installationLabel: 'CASE STUDY 02',
+    panels: [
+      {
+        type: 'intro',
+        caption: 'The first minute decides the first month.',
+        body: 'Users were dropping off before they ever saw the value. Not because the product was broken — because the story was.',
+      },
+      {
+        type: 'problem',
+        caption: 'THE PROBLEM',
+        body: 'An 11-step onboarding flow asking for information the product didn\'t need yet. 68% drop-off before step 4. The product was treating new users like form-fillers, not people.',
+      },
+      {
+        type: 'process',
+        caption: 'THE PROCESS',
+        body: '[Detail withheld — active product.] Ran 22 usability sessions. Restructured the flow around progressive disclosure and early value delivery. Prototyped in Figma; tested with real prospect segments.',
+      },
+      {
+        type: 'outcome',
+        caption: 'THE OUTCOME',
+        body: 'Trial-to-paid conversion up 34%. Time-to-first-value down from 11 minutes to 3. The product finally made its first impression.',
+      },
+    ],
+  },
+  {
+    id: 'project-3',
+    title: 'Mobile Data Dashboard',
+    role: 'Product Designer',
+    company: '[Confidential]',
+    year: '2023',
+    outcome: 'Daily active usage up 2.1× among field teams in first quarter.',
+    isConfidential: true,
+    color: '#ffd166',
+    installationLabel: 'CASE STUDY 03',
+    panels: [
+      {
+        type: 'intro',
+        caption: 'Data on a desktop is analysis. Data in the field is decision-making.',
+        body: 'Field teams had access to exactly the same dashboard as the office. On a 5-inch screen. In bright sunlight. Between site visits.',
+      },
+      {
+        type: 'problem',
+        caption: 'THE PROBLEM',
+        body: '[Detail withheld — active product.] The desktop dashboard was pixel-perfect. The mobile experience was a pinch-and-zoom afterthought. Field teams had stopped using it entirely.',
+      },
+      {
+        type: 'process',
+        caption: 'THE PROCESS',
+        body: 'Shadowed field engineers for a week. Mapped their actual decision cadence — what do they need at the start of a shift vs. mid-job? Designed a mobile-first KPI surface with progressive drill-down.',
+      },
+      {
+        type: 'outcome',
+        caption: 'THE OUTCOME',
+        body: 'Daily active usage up 2.1× among field teams. First product the field teams actually requested updates to.',
+      },
+    ],
+  },
+  {
+    id: 'project-4',
+    title: 'Brand Strategy: Petronas Retail',
+    role: 'Brand Strategist',
+    company: 'Petronas',
+    year: '2019',
+    outcome: 'Brand positioning framework adopted across APAC retail network.',
+    isConfidential: false,
+    color: '#00b894',
+    installationLabel: 'CASE STUDY 04',
+    panels: [
+      {
+        type: 'intro',
+        caption: 'Before I designed products, I designed meaning.',
+        body: 'This was before the pixels. When I was figuring out that strategy is just design at a higher altitude.',
+      },
+      {
+        type: 'problem',
+        caption: 'THE PROBLEM',
+        body: 'Petronas retail was a category leader with no clear customer reason-to-believe beyond price. Competitors were closing the gap. The brand needed a positioning that could hold across 12 markets.',
+      },
+      {
+        type: 'process',
+        caption: 'THE PROCESS',
+        body: 'Ran consumer insight studies across Malaysia, Indonesia, and Thailand. Identified latent positioning territory around energy stewardship — not just fuelling cars, but enabling lives. Developed the framework and communication architecture.',
+      },
+      {
+        type: 'outcome',
+        caption: 'THE OUTCOME',
+        body: 'Framework adopted across APAC retail network. This project taught me that the best design decisions are invisible — people just feel right about them.',
+      },
+    ],
+  },
+  {
+    id: 'project-5',
+    title: 'Analytics Product Redesign',
+    role: 'Product Designer',
+    company: '[Confidential]',
+    year: '2024',
+    outcome: 'Feature adoption rate up 47%. Reduced support tickets by 30%.',
+    isConfidential: true,
+    color: '#a855f7',
+    installationLabel: 'CASE STUDY 05',
+    panels: [
+      {
+        type: 'intro',
+        caption: 'The most dangerous dashboard is the one nobody questions.',
+        body: 'The analytics product had been running for three years. Nobody had looked at whether it was actually answering the right questions.',
+      },
+      {
+        type: 'problem',
+        caption: 'THE PROBLEM',
+        body: '[Detail withheld — active product.] Feature adoption at 23%. Heavy users running workarounds. Support tickets citing confusion with core flows. The product had grown but not grown up.',
+      },
+      {
+        type: 'process',
+        caption: 'THE PROCESS',
+        body: 'Jobs-to-be-done research with 15 power users and 10 churned users. Mapped the gap between designed intent and actual use. Rebuilt the information architecture before touching a single component.',
+      },
+      {
+        type: 'outcome',
+        caption: 'THE OUTCOME',
+        body: 'Feature adoption up 47%. Support tickets down 30%. Power users stopped needing workarounds. The product finally did what it promised.',
+      },
+    ],
+  },
+]

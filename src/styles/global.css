@@ -1,0 +1,607 @@
+/* ──────────────────────────────────────────────────
+   CSS CUSTOM PROPERTIES — Spider-Verse palette
+   ────────────────────────────────────────────────── */
+:root {
+  --black:        #0a0a0f;
+  --blue-deep:    #050810;
+  --blue-mid:     #0a1628;
+  --blue-electric:#4da6ff;
+  --red:          #e63946;
+  --yellow:       #ffd166;
+  --white:        #f8f9fa;
+  --panel-bg:     #fffef5;
+  --caption-bg:   #ffd166;
+  --ink:          #0d0d0d;
+
+  --font-comic:   'Bangers', 'Impact', cursive;
+  --font-body:    'Comic Neue', 'Comic Sans MS', cursive;
+}
+
+/* ──────────────────────────────────────────────────
+   RESET
+   ────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--blue-deep);
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--white);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ──────────────────────────────────────────────────
+   APP SHELL
+   ────────────────────────────────────────────────── */
+.app {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+}
+
+/* ──────────────────────────────────────────────────
+   ANTECHAMBER
+   ────────────────────────────────────────────────── */
+.antechamber {
+  position: fixed;
+  inset: 0;
+  background: var(--black);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  overflow: hidden;
+
+  opacity: 0;
+  transform: scale(1.02);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.antechamber--ready {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.antechamber--exiting {
+  opacity: 0;
+  transform: scale(0.97);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+  pointer-events: none;
+}
+
+/* Halftone dot overlay on antechamber */
+.antechamber__halftone {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(77,166,255,0.12) 1px, transparent 1px);
+  background-size: 18px 18px;
+  pointer-events: none;
+}
+
+.antechamber__noise {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(255,255,255,0.015) 2px,
+    rgba(255,255,255,0.015) 4px
+  );
+  pointer-events: none;
+}
+
+.antechamber__panel-lines {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+}
+
+.antechamber__panel-line {
+  flex: 1;
+  border-bottom: 1px solid rgba(77,166,255,0.06);
+}
+
+.antechamber__burst {
+  position: absolute;
+  right: 6%;
+  top: 8%;
+  font-size: 120px;
+  color: var(--yellow);
+  opacity: 0.08;
+  font-family: var(--font-comic);
+  pointer-events: none;
+  line-height: 1;
+}
+
+.antechamber__content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  max-width: 640px;
+  padding: 32px;
+}
+
+.antechamber__eyebrow {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--blue-electric);
+  margin-bottom: 20px;
+  border: 1.5px solid var(--blue-electric);
+  display: inline-block;
+  padding: 4px 14px;
+}
+
+.antechamber__name {
+  font-family: var(--font-comic);
+  font-size: clamp(80px, 15vw, 160px);
+  letter-spacing: 0.04em;
+  line-height: 0.9;
+  margin-bottom: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.antechamber__name-line {
+  display: block;
+  -webkit-text-stroke: 3px var(--white);
+  color: transparent;
+}
+
+.antechamber__name-line--accent {
+  color: var(--yellow);
+  -webkit-text-stroke: 3px var(--ink);
+}
+
+.antechamber__tagline {
+  font-family: var(--font-body);
+  font-size: clamp(15px, 2.5vw, 18px);
+  font-style: italic;
+  line-height: 1.6;
+  color: rgba(248,249,250,0.85);
+  margin-bottom: 28px;
+  border-left: 3px solid var(--red);
+  padding-left: 16px;
+  text-align: left;
+}
+
+.antechamber__caption {
+  display: inline-flex;
+  background: var(--caption-bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 10px 16px;
+  border: 2px solid var(--ink);
+  box-shadow: 3px 3px 0 var(--ink);
+  text-align: left;
+  line-height: 1.5;
+  margin-bottom: 40px;
+}
+
+.antechamber__caption-bracket {
+  color: var(--red);
+  margin-right: 6px;
+  white-space: nowrap;
+}
+
+.antechamber__enter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--blue-electric);
+  color: var(--ink);
+  border: 3px solid var(--ink);
+  box-shadow: 5px 5px 0 var(--ink);
+  padding: 14px 32px;
+  font-family: var(--font-comic);
+  font-size: 22px;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.antechamber__enter-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0 var(--ink);
+}
+
+.antechamber__enter-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 var(--ink);
+}
+
+.antechamber__enter-arrow {
+  width: 22px;
+  height: 22px;
+}
+
+.antechamber__hint {
+  margin-top: 28px;
+  font-size: 12px;
+  color: rgba(248,249,250,0.4);
+  letter-spacing: 0.05em;
+}
+
+.antechamber__hint kbd {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 3px;
+  padding: 1px 6px;
+  font-family: monospace;
+}
+
+/* ──────────────────────────────────────────────────
+   HUD — Crosshair, prompts, tooltip
+   ────────────────────────────────────────────────── */
+.hud__crosshair {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 40px;
+  z-index: 20;
+  pointer-events: none;
+  mix-blend-mode: difference;
+}
+
+.hud__prompt {
+  position: fixed;
+  bottom: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--caption-bg);
+  color: var(--ink);
+  border: 2px solid var(--ink);
+  box-shadow: 3px 3px 0 var(--ink);
+  padding: 8px 20px;
+  font-family: var(--font-comic);
+  font-size: 18px;
+  letter-spacing: 0.05em;
+  z-index: 20;
+  pointer-events: none;
+
+  animation: promptPop 0.2s ease-out;
+}
+
+.hud__prompt-key {
+  background: var(--ink);
+  color: var(--yellow);
+  border-radius: 3px;
+  padding: 2px 8px;
+  font-size: 16px;
+}
+
+.hud__click-to-lock {
+  position: fixed;
+  bottom: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(5,8,16,0.8);
+  border: 1.5px solid rgba(77,166,255,0.4);
+  color: rgba(255,255,255,0.6);
+  font-family: var(--font-body);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 8px 24px;
+  z-index: 20;
+  pointer-events: none;
+}
+
+/* Easter egg tooltip — comic narration box */
+.hud__egg-tooltip {
+  position: fixed;
+  bottom: 28%;
+  right: 5%;
+  max-width: 300px;
+  background: var(--panel-bg);
+  color: var(--ink);
+  border: 3px solid var(--ink);
+  box-shadow: 5px 5px 0 var(--ink);
+  padding: 16px 20px;
+  z-index: 25;
+  pointer-events: none;
+
+  animation: tooltipSlide 0.25s ease-out;
+}
+
+.hud__egg-label {
+  font-family: var(--font-comic);
+  font-size: 18px;
+  letter-spacing: 0.04em;
+  color: var(--red);
+  margin-bottom: 8px;
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 6px;
+}
+
+.hud__egg-copy {
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.55;
+  font-style: italic;
+}
+
+/* ──────────────────────────────────────────────────
+   OVERLAY — Comic panel layout
+   ────────────────────────────────────────────────── */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(5,8,16,0.75);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: 20px;
+
+  animation: overlayFade 0.2s ease-out;
+}
+
+.overlay__panel {
+  background: var(--panel-bg);
+  color: var(--ink);
+  border: 3px solid var(--ink);
+  box-shadow: 8px 8px 0 var(--ink);
+  max-width: 860px;
+  width: 100%;
+  max-height: 88vh;
+  overflow-y: auto;
+  padding: 36px 40px;
+  position: relative;
+
+  animation: panelSlide 0.25s ease-out;
+}
+
+.overlay__panel::-webkit-scrollbar {
+  width: 6px;
+}
+.overlay__panel::-webkit-scrollbar-track {
+  background: var(--ink);
+}
+.overlay__panel::-webkit-scrollbar-thumb {
+  background: var(--accent, var(--blue-electric));
+}
+
+.overlay__close {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.overlay__close-burst {
+  font-size: 32px;
+  color: var(--red);
+  line-height: 1;
+  display: block;
+  transition: transform 0.15s;
+}
+
+.overlay__close:hover .overlay__close-burst {
+  transform: rotate(90deg) scale(1.2);
+}
+
+.overlay__confidential-badge {
+  display: inline-block;
+  background: var(--ink);
+  color: var(--yellow);
+  font-family: var(--font-comic);
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  padding: 3px 12px;
+  margin-bottom: 12px;
+}
+
+.overlay__eyebrow {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--accent, var(--blue-electric));
+  margin-bottom: 8px;
+}
+
+.overlay__title {
+  font-family: var(--font-comic);
+  font-size: clamp(28px, 5vw, 48px);
+  letter-spacing: 0.03em;
+  line-height: 1;
+  margin-bottom: 8px;
+  color: var(--ink);
+}
+
+.overlay__subtitle {
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-style: italic;
+  color: rgba(13,13,13,0.65);
+  margin-bottom: 24px;
+}
+
+.overlay__outcome {
+  background: var(--accent, var(--blue-electric));
+  border: 2px solid var(--ink);
+  box-shadow: 4px 4px 0 var(--ink);
+  padding: 14px 20px;
+  margin-bottom: 28px;
+}
+
+.overlay__outcome-label {
+  font-family: var(--font-comic);
+  font-size: 13px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.overlay__outcome-text {
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.4;
+}
+
+/* Comic panels grid */
+.overlay__panels {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3px;
+  background: var(--ink);
+  border: 3px solid var(--ink);
+}
+
+.comic-panel {
+  background: var(--panel-bg);
+  padding: 20px;
+  position: relative;
+}
+
+.comic-panel--wide {
+  grid-column: 1 / -1;
+}
+
+.comic-panel--intro {
+  border-bottom: 2px solid var(--ink);
+}
+
+.comic-panel__caption {
+  font-family: var(--font-comic);
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: var(--caption-bg);
+  color: var(--ink);
+  border: 1.5px solid var(--ink);
+  display: inline-block;
+  padding: 2px 10px;
+  margin-bottom: 12px;
+}
+
+.comic-panel__body {
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--ink);
+}
+
+.comic-panel--intro .comic-panel__body {
+  font-size: 16px;
+  font-style: italic;
+  font-weight: 700;
+}
+
+.comic-panel__contact {
+  margin-top: 12px;
+  font-family: var(--font-body);
+  font-size: 13px;
+}
+
+.comic-link {
+  color: var(--accent, var(--blue-electric));
+  text-decoration: underline;
+}
+
+/* Side quest tab buttons */
+.overlay__tab {
+  background: var(--panel-bg);
+  border: 2px solid var(--ink);
+  box-shadow: 3px 3px 0 var(--ink);
+  padding: 8px 18px;
+  font-family: var(--font-comic);
+  font-size: 16px;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  color: var(--ink);
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.overlay__tab:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--ink);
+}
+
+.overlay__tab--active {
+  background: var(--accent, var(--blue-electric));
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 var(--ink);
+}
+
+/* ──────────────────────────────────────────────────
+   ANIMATIONS
+   ────────────────────────────────────────────────── */
+@keyframes overlayFade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes panelSlide {
+  from { transform: translateY(16px) scale(0.98); opacity: 0; }
+  to   { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+@keyframes promptPop {
+  from { transform: translateX(-50%) scale(0.9); opacity: 0; }
+  to   { transform: translateX(-50%) scale(1); opacity: 1; }
+}
+
+@keyframes tooltipSlide {
+  from { transform: translateX(12px); opacity: 0; }
+  to   { transform: translateX(0); opacity: 1; }
+}
+
+/* ──────────────────────────────────────────────────
+   RESPONSIVE
+   ────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .overlay__panel {
+    padding: 24px 20px;
+  }
+
+  .overlay__panels {
+    grid-template-columns: 1fr;
+  }
+
+  .comic-panel--wide {
+    grid-column: 1;
+  }
+
+  .antechamber__content {
+    padding: 24px 20px;
+  }
+
+  .hud__egg-tooltip {
+    right: 2%;
+    bottom: 22%;
+    max-width: 90%;
+  }
+}
