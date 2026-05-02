@@ -1,6 +1,6 @@
 import { useRef, useState, useCallback, useEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { ProximityContext } from '../../../context/ProximityContext'
+import { ProximityContext, useProximity } from '../../../context/ProximityContext'
 
 // ─────────────────────────────────────────────────────
 // ProximityProvider — lives OUTSIDE the Canvas.
@@ -99,5 +99,4 @@ export function ProximityFrameUpdater() {
   return null
 }
 
-// Re-export hook for convenience
-export { useProximity } from '../../../context/ProximityContext'
+export { useProximity }

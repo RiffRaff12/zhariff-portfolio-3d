@@ -1,8 +1,11 @@
-import { useRef, useEffect, useState, useMemo } from 'react'
+import { useRef, useEffect, useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { useProximity } from '../../../context/ProximityContext'
 import { EASTER_EGGS } from '../../../data/easterEggs'
+
+// Pre-allocated to avoid per-frame allocations
+const _scaleTarget = new THREE.Vector3()
 
 // World positions for each Easter egg object
 const EGG_POSITIONS = {
@@ -38,11 +41,14 @@ function EasterEggObject({ egg }) {
 
   useFrame((_, delta) => {
     if (!meshRef.current) return
-    const targetScale = isHighlighted ? 1.15 : 1.0
-    meshRef.current.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), delta * 8)
 
-    // Gentle float animation
-    meshRef.current.position.y = (pos?.[1] ?? 0) + Math.sin(Date.now() * 0.002 + id.charCodeAt(0)) * 0.025
+    // Scale highlight pulse — reuse pre-allocated vector
+    const s = isHighlighted ? 1.15 : 1.0
+    _scaleTarget.set(s, s, s)
+    meshRef.current.scale.lerp(_scaleTarget, delta * 8)
+
+    // Float in local space — group is already at world pos, so y=0 is baseline
+    meshRef.current.position.y = Math.sin(Date.now() * 0.002 + id.charCodeAt(0)) * 0.025
   })
 
   if (!pos) return null
