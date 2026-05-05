@@ -3,6 +3,7 @@ import { Canvas } from '@react-three/fiber'
 import { DeviceProvider, useDevice } from './context/DeviceContext'
 import { ProximityProvider, ProximityFrameUpdater } from './modules/deep/ProximityInteractionSystem'
 import { OverlayProvider } from './context/OverlayContext'
+import { InputBusProvider, useInputBus } from './context/InputBusContext'
 import { AssetLoader } from './modules/deep/AssetLoader'
 import { SpiderVerseRenderer } from './modules/deep/SpiderVerseRenderer'
 import { FirstPersonController } from './modules/deep/FirstPersonController'
@@ -31,9 +32,7 @@ function BedroomExperience({ visible }) {
   const mobileInputRef = useRef({ positionDelta: null })
   const { isMobile } = useDevice()
 
-  const handleMobileInteract = useCallback(() => {
-    window.dispatchEvent(new CustomEvent('mobile-interact'))
-  }, [])
+  const { onInteract: handleMobileInteract } = useInputBus()
 
   return (
     <div
@@ -97,13 +96,13 @@ function AppContent() {
 export function App() {
   return (
     <DeviceProvider>
-      {/* ProximityProvider and OverlayProvider wrap everything so context is shared
-          between Canvas internals (3D objects) and DOM HUD/overlays */}
-      <ProximityProvider>
-        <OverlayProvider>
-          <AppContent />
-        </OverlayProvider>
-      </ProximityProvider>
+      <InputBusProvider>
+        <ProximityProvider>
+          <OverlayProvider>
+            <AppContent />
+          </OverlayProvider>
+        </ProximityProvider>
+      </InputBusProvider>
     </DeviceProvider>
   )
 }

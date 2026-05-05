@@ -2,6 +2,9 @@ import { useRef, useEffect, useCallback } from 'react'
 import { useThree, useFrame } from '@react-three/fiber'
 import { PointerLockControls } from '@react-three/drei'
 import * as THREE from 'three'
+import { applyCollision } from '../../../utils/physics'
+import { SCENE_CONFIG } from '../../../config/scene.config'
+import { useInputBus } from '../../../context/InputBusContext'
 
 const MOVE_SPEED = 4.5
 const EYE_HEIGHT = 1.7
@@ -9,38 +12,12 @@ const HEAD_BOB_SPEED = 8
 const HEAD_BOB_AMOUNT = 0.045
 const MOBILE_LOOK_SPEED = 0.0028
 
-// Room AABB (camera stays inside these X/Z bounds)
-const ROOM_BOUNDS = { minX: -4.0, maxX: 4.0, minZ: -3.0, maxZ: 3.0 }
-
-// Cylindrical obstacle colliders: [cx, cz, radius]
-const COLLIDERS = [
-  [2.8, -2.2, 0.9],   // desk
-  [-2.8, -1.8, 1.0],  // bed
-  [-3.6,  0.5, 0.5],  // bookshelf
-]
-
 // Pre-allocated to avoid per-frame allocations
 const _fwd   = new THREE.Vector3()
 const _right = new THREE.Vector3()
 const _up    = new THREE.Vector3(0, 1, 0)
 const _move  = new THREE.Vector3()
 const _disp  = new THREE.Vector3()
-
-function applyCollision(x, z) {
-  let nx = Math.max(ROOM_BOUNDS.minX, Math.min(ROOM_BOUNDS.maxX, x))
-  let nz = Math.max(ROOM_BOUNDS.minZ, Math.min(ROOM_BOUNDS.maxZ, z))
-  for (const [cx, cz, r] of COLLIDERS) {
-    const dx = nx - cx
-    const dz = nz - cz
-    const dist = Math.sqrt(dx * dx + dz * dz)
-    if (dist < r && dist > 0.001) {
-      const scale = r / dist
-      nx = cx + dx * scale
-      nz = cz + dz * scale
-    }
-  }
-  return [nx, nz]
-}
 
 export function FirstPersonController({ isActive, onLockChange, inputRef }) {
   const { camera, gl } = useThree()
@@ -57,6 +34,8 @@ export function FirstPersonController({ isActive, onLockChange, inputRef }) {
   // Always call useRef — inputRef prop takes precedence via nullish coalesce
   const fallbackInputRef = useRef({ positionDelta: null })
   const mobileInput = inputRef ?? fallbackInputRef
+
+  const inputBus = useInputBus()
 
   useEffect(() => {
     camera.position.set(0, EYE_HEIGHT, 1.5)
@@ -75,20 +54,15 @@ export function FirstPersonController({ isActive, onLockChange, inputRef }) {
     }
   }, [isActive])
 
-  // Mobile look — accumulate rotation from touch drag deltas
-  useEffect(() => {
-    const onLook = (e) => {
-      const { dx, dy } = e.detail
-      mobileEuler.current.y -= dx * MOBILE_LOOK_SPEED
-      mobileEuler.current.x = THREE.MathUtils.clamp(
-        mobileEuler.current.x - dy * MOBILE_LOOK_SPEED,
-        -Math.PI / 4,
-        Math.PI / 4
-      )
-    }
-    window.addEventListener('mobile-look', onLook)
-    return () => window.removeEventListener('mobile-look', onLook)
-  }, [])
+  // Mobile look — accumulate rotation from InputBus look events
+  inputBus?.useLook((dx, dy) => {
+    mobileEuler.current.y -= dx * MOBILE_LOOK_SPEED
+    mobileEuler.current.x = THREE.MathUtils.clamp(
+      mobileEuler.current.x - dy * MOBILE_LOOK_SPEED,
+      -Math.PI / 4,
+      Math.PI / 4
+    )
+  })
 
   const handleLock   = useCallback(() => { isLockedRef.current = true;  onLockChange?.(true)  }, [onLockChange])
   const handleUnlock = useCallback(() => { isLockedRef.current = false; onLockChange?.(false) }, [onLockChange])
@@ -131,9 +105,11 @@ export function FirstPersonController({ isActive, onLockChange, inputRef }) {
     velocityRef.current.lerp(_move.clone().multiplyScalar(MOVE_SPEED), Math.min(1, dt * 10))
 
     _disp.copy(velocityRef.current).multiplyScalar(dt)
-    let nx = camera.position.x + _disp.x
-    let nz = camera.position.z + _disp.z;
-    [nx, nz] = applyCollision(nx, nz)
+    const raw = {
+      x: camera.position.x + _disp.x,
+      z: camera.position.z + _disp.z,
+    }
+    const { x: nx, z: nz } = applyCollision(raw.x, raw.z, SCENE_CONFIG.colliders, SCENE_CONFIG.bounds)
 
     // Head bob
     if (isMoving) {

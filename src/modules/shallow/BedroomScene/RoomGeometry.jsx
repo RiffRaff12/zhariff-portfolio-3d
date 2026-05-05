@@ -1,9 +1,8 @@
 import { useMemo } from 'react'
 import * as THREE from 'three'
+import { SCENE_CONFIG } from '../../../config/scene.config'
 
-const ROOM_W = 9   // X total width
-const ROOM_H = 3.5 // Y total height
-const ROOM_D = 7   // Z total depth
+const { width: ROOM_W, height: ROOM_H, depth: ROOM_D } = SCENE_CONFIG.room
 const WALL_T = 0.2
 
 // Comic-palette toon material factory

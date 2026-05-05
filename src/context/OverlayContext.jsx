@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useCallback } from 'react'
 
-const OverlayContext = createContext({
+export const OverlayContext = createContext({
   openOverlay: () => {},
   closeOverlay: () => {},
   overlay: null,

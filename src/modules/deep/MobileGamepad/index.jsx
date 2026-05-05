@@ -1,5 +1,7 @@
 import { useRef, useEffect, useCallback, useState } from 'react'
 import * as THREE from 'three'
+import { getRelativeJoystick, applyDeadzone } from '../../../utils/input'
+import { useInputBus } from '../../../context/InputBusContext'
 
 const JOYSTICK_SIZE = 80
 const KNOB_SIZE = 36
@@ -10,24 +12,6 @@ function Joystick({ style, onMove }) {
   const touch = useRef(null)
   const [knob, setKnob] = useState({ x: 0, y: 0 })
 
-  const getRelative = (clientX, clientY) => {
-    const rect = baseRef.current.getBoundingClientRect()
-    const cx = rect.left + rect.width / 2
-    const cy = rect.top + rect.height / 2
-    const dx = clientX - cx
-    const dy = clientY - cy
-    const maxR = JOYSTICK_SIZE / 2
-    const dist = Math.sqrt(dx * dx + dy * dy)
-    const clampedDist = Math.min(dist, maxR)
-    const angle = Math.atan2(dy, dx)
-    return {
-      x: (Math.cos(angle) * clampedDist) / maxR,
-      y: (Math.sin(angle) * clampedDist) / maxR,
-      px: Math.cos(angle) * clampedDist,
-      py: Math.sin(angle) * clampedDist,
-    }
-  }
-
   const onTouchStart = (e) => {
     e.preventDefault()
     touch.current = e.changedTouches[0].identifier
@@ -37,9 +21,12 @@ function Joystick({ style, onMove }) {
     e.preventDefault()
     for (const t of e.changedTouches) {
       if (t.identifier === touch.current) {
-        const { x, y, px, py } = getRelative(t.clientX, t.clientY)
-        setKnob({ x: px, y: py })
-        onMove(Math.abs(x) > DEADZONE ? x : 0, Math.abs(y) > DEADZONE ? y : 0)
+        const rect = baseRef.current.getBoundingClientRect()
+        const rel = getRelativeJoystick({ x: t.clientX, y: t.clientY }, rect, JOYSTICK_SIZE)
+        const clamped = applyDeadzone(rel.x, rel.y, DEADZONE)
+        const maxR = JOYSTICK_SIZE / 2
+        setKnob({ x: rel.x * maxR, y: rel.y * maxR })
+        onMove(clamped.x, clamped.y)
         break
       }
     }
@@ -93,9 +80,9 @@ function Joystick({ style, onMove }) {
 }
 
 export function MobileGamepad({ inputRef, onInteract }) {
-  // Look via right-side drag
   const lookOrigin = useRef(null)
   const [visible, setVisible] = useState(false)
+  const { onLook } = useInputBus()
 
   useEffect(() => {
     setVisible(true)
@@ -118,8 +105,7 @@ export function MobileGamepad({ inputRef, onInteract }) {
       if (t.identifier === lookOrigin.current.id) {
         const dx = t.clientX - lookOrigin.current.x
         const dy = t.clientY - lookOrigin.current.y
-        // Dispatch synthetic mouse event to drive PointerLockControls look
-        window.dispatchEvent(new CustomEvent('mobile-look', { detail: { dx, dy } }))
+        onLook(dx, dy)
         lookOrigin.current = { ...lookOrigin.current, x: t.clientX, y: t.clientY }
         break
       }

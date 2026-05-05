@@ -1,6 +1,8 @@
 import { useRef, useState, useCallback, useEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { ProximityContext, useProximity } from '../../../context/ProximityContext'
+import { findNearestInProximity } from '../../../utils/physics'
+import { useInputBus } from '../../../context/InputBusContext'
 
 // ─────────────────────────────────────────────────────
 // ProximityProvider — lives OUTSIDE the Canvas.
@@ -42,14 +44,12 @@ export function ProximityProvider({ children }) {
     const onKey = (e) => {
       if (e.code === 'KeyE') pendingInteraction.current = true
     }
-    const onMobile = () => { pendingInteraction.current = true }
     window.addEventListener('keydown', onKey)
-    window.addEventListener('mobile-interact', onMobile)
-    return () => {
-      window.removeEventListener('keydown', onKey)
-      window.removeEventListener('mobile-interact', onMobile)
-    }
+    return () => window.removeEventListener('keydown', onKey)
   }, [])
+
+  const inputBus = useInputBus()
+  inputBus?.useInteract(() => { pendingInteraction.current = true })
 
   return (
     <ProximityContext.Provider
@@ -77,17 +77,7 @@ export function ProximityFrameUpdater() {
   const { registry, updateHighlighted, fireInteraction, pendingInteraction } = useProximity()
 
   useFrame(({ camera }) => {
-    let nearest = null
-    let nearestDist = Infinity
-
-    for (const [id, { position, radius }] of registry.current) {
-      const dist = camera.position.distanceTo(position)
-      if (dist <= radius && dist < nearestDist) {
-        nearest = id
-        nearestDist = dist
-      }
-    }
-
+    const nearest = findNearestInProximity(camera.position, registry.current)
     updateHighlighted(nearest)
 
     if (pendingInteraction.current) {

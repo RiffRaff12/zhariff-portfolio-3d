@@ -8,6 +8,7 @@ import { ProjectInstallation } from '../ProjectInstallation'
 import { AboutMeInstallation } from '../AboutMeInstallation'
 import { SideQuestsInstallation } from '../SideQuestsInstallation'
 import { PROJECTS } from '../../../data/projects'
+import { SCENE_CONFIG } from '../../../config/scene.config'
 
 // Comic diegetic onomatopoeia and labels rendered in the scene
 function ComicWords() {
@@ -100,26 +101,17 @@ function ComicWords() {
   )
 }
 
-// Case study installations positioned around the room
 function CaseStudyInstallations() {
-  // Each installation is a "poster / pinboard" on a wall or surface
-  const placements = [
-    { projectIndex: 0, position: [3.8, 2.1, -2.5], rotation: [0, -Math.PI / 2, 0] }, // right wall back
-    { projectIndex: 1, position: [3.8, 2.1, -0.5], rotation: [0, -Math.PI / 2, 0] }, // right wall mid
-    { projectIndex: 2, position: [0.5, 2.1, -3.3], rotation: [0, 0, 0] },             // back wall center-right
-    { projectIndex: 3, position: [-1.5, 2.1, -3.3], rotation: [0, 0, 0] },            // back wall center-left
-    { projectIndex: 4, position: [3.8, 2.1, 1.2], rotation: [0, -Math.PI / 2, 0] }, // right wall front
-  ]
-
+  const projectInstalls = SCENE_CONFIG.installations.filter(i => i.type === 'project')
   return (
     <>
-      {placements.map(({ projectIndex, position, rotation }) => (
+      {projectInstalls.map(({ id, projectIndex, position, rotation, interactionRadius }) => (
         <ProjectInstallation
-          key={PROJECTS[projectIndex].id}
+          key={id}
           project={PROJECTS[projectIndex]}
           position={position}
           rotation={rotation}
-          interactionRadius={2.0}
+          interactionRadius={interactionRadius}
         />
       ))}
     </>
@@ -145,16 +137,16 @@ export function BedroomScene() {
 
       <Suspense fallback={null}>
         <CaseStudyInstallations />
-        <AboutMeInstallation
-          position={[-3.75, 2.2, -1.5]}
-          rotation={[0, Math.PI / 2, 0]}
-          interactionRadius={2.2}
-        />
-        <SideQuestsInstallation
-          position={[-3.75, 2.2, 1.5]}
-          rotation={[0, Math.PI / 2, 0]}
-          interactionRadius={2.2}
-        />
+        {SCENE_CONFIG.installations
+          .filter(i => i.type === 'about-me')
+          .map(({ id, position, rotation, interactionRadius }) => (
+            <AboutMeInstallation key={id} position={position} rotation={rotation} interactionRadius={interactionRadius} />
+          ))}
+        {SCENE_CONFIG.installations
+          .filter(i => i.type === 'side-quests')
+          .map(({ id, position, rotation, interactionRadius }) => (
+            <SideQuestsInstallation key={id} position={position} rotation={rotation} interactionRadius={interactionRadius} />
+          ))}
         <EasterEggSystem />
       </Suspense>
     </group>
