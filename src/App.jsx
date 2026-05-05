@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, Suspense } from 'react'
+import { useState, useRef, useCallback, Suspense, Component } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { DeviceProvider, useDevice } from './context/DeviceContext'
 import { ProximityProvider, ProximityFrameUpdater } from './modules/deep/ProximityInteractionSystem'
@@ -13,6 +13,40 @@ import { NavigationHUD } from './modules/shallow/NavigationHUD'
 import { OverlayManager } from './modules/shallow/OverlayManager'
 import { ASSET_MANIFEST } from './modules/deep/AssetLoader/manifest'
 
+class ErrorBoundary extends Component {
+  constructor(props) {
+    super(props)
+    this.state = { error: null }
+  }
+  static getDerivedStateFromError(error) {
+    return { error }
+  }
+  render() {
+    if (this.state.error) {
+      return (
+        <div style={{
+          position: 'fixed', inset: 0, background: '#0a0a0f', color: '#f8f9fa',
+          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+          fontFamily: 'monospace', padding: '32px', textAlign: 'center',
+        }}>
+          <div style={{ fontSize: '48px', marginBottom: '16px' }}>💥</div>
+          <div style={{ fontSize: '22px', marginBottom: '12px', color: '#e63946' }}>Something went wrong</div>
+          <pre style={{ fontSize: '12px', color: '#4da6ff', maxWidth: '600px', whiteSpace: 'pre-wrap', textAlign: 'left' }}>
+            {this.state.error?.message}
+          </pre>
+          <button onClick={() => window.location.reload()} style={{
+            marginTop: '24px', padding: '10px 24px', background: '#4da6ff',
+            border: '2px solid #0d0d0d', cursor: 'pointer', fontFamily: 'monospace', fontSize: '14px',
+          }}>
+            Reload
+          </button>
+        </div>
+      )
+    }
+    return this.props.children
+  }
+}
+
 // The 3D world — rendered inside Canvas
 function World() {
   return (
@@ -20,7 +54,9 @@ function World() {
       <AssetLoader manifest={ASSET_MANIFEST}>
         <ProximityFrameUpdater />
         <BedroomScene />
-        <SpiderVerseRenderer enabled />
+        <ErrorBoundary>
+          <SpiderVerseRenderer enabled />
+        </ErrorBoundary>
       </AssetLoader>
     </Suspense>
   )
@@ -95,14 +131,16 @@ function AppContent() {
 
 export function App() {
   return (
-    <DeviceProvider>
-      <InputBusProvider>
-        <ProximityProvider>
-          <OverlayProvider>
-            <AppContent />
-          </OverlayProvider>
-        </ProximityProvider>
-      </InputBusProvider>
-    </DeviceProvider>
+    <ErrorBoundary>
+      <DeviceProvider>
+        <InputBusProvider>
+          <ProximityProvider>
+            <OverlayProvider>
+              <AppContent />
+            </OverlayProvider>
+          </ProximityProvider>
+        </InputBusProvider>
+      </DeviceProvider>
+    </ErrorBoundary>
   )
 }
